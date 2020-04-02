@@ -229,6 +229,131 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/02/v20200402/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="稀饭">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="稀饭的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/02/v20200402/" itemprop="url">RIS、PACS系统复盘</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-02T00:00:00+08:00">
+                2020-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>RIS是放射信息管理系统，包括预约登记、出片、报告、审核等流程；PACS是解决dicom医学影像存储、调用、显示的系统。RIS和PACS系统称为大影像系统。此项目开发的系统将完全替换现有系统。<br>在此次项目中发现2个问题，第一个是2个系统在线上并行的方案没有在产品设计的时候考虑进去；另外一个是项目管理中出现的问题</p>
+<p>第一、试运行准备<br>老数据迁移<br>1.在做新系统之前没考虑周全，业务逻辑一致，在开发设计架构时应让他们参考来系统数据表结构，为后面老数据迁移做准备<br>2.在数据迁移过程中不仅要迁移用户行为数据，还要迁移原数据字典<br>3.医疗影像数据过于庞大，在迁移过程中需要花上几天的时间，那在此期间产生的新数据要实行追加</p>
+<p>新系统并行方案<br>因医疗系统行业特性，新系统直接完全替换掉老系统风险太大，实行2套系统并行1个月的方案，这个方案在测试阶段就必须得给到，并行方案中需要考虑基础信息系统是否支持接入2套系统，系统间数据交互会不会混乱？根据每一步的数据交互，考虑如下<br>1.第一步，对接his系统，试运行期间针对从his推送的数据实行双写，确保原系统能正常运作<br>2.第二步，医疗设备工作台获取ris数据形成worklist，调研发现，worklist只能接受一个服务的数据传输。在这种情况下，优先保障原系统的正常运作，新系统只能在离线状态提前测试，在业务正常运行期间依旧对接原ris系统。pacs系统对接worklist，通过worklist推送上来的dicom影像进行存储和分发。<br>3.第三步，阅片系统从pacs系统中调阅影像数据，pacs影像存储出具庞大，全部迁移较为困难，后考虑在新pacs系统中写一个存储过程，去查找原数据库中的影像存储地址。</p>
+<p>多系统对接<br>涉及到his、risp、pacs、打印i系统，叫号系统间的对接，方案需要在前期需求评审的时候就应该出来<br>1.为确保数据上的安全性，这些系统间的对接方式不是通过数据库进行，而是通过数据视图和存储过程进行对接，对接过程中更加简单，但是不易复用和移植。</p>
+<p>第二、项目管理中的问题<br>开发和测试在项目进行过程中都出现了不同程度的延期<br>问题如下<br>1.开发和测试人员对deadline不重视<br>2.开发估时偏差多大<br>3.测试对义务和需求了解不够<br>后续解决方案<br>1.在拆分任务阶段，开会确认每个人的任务以及工时，如有分配不合理的地方当场提出及修正<br>2.对于超过一个月的项目，开发过程中进行里程碑式管理，由开发和产品确认每一个里程碑的成果<br>3.测试在开发前期进行测试用例评审，由此了解测试以及开发对需求的理解程度，把控测试人员的测试进度<br>4.有多系统同时进行开发的情况，产品经理必须在前期整理好对接接口进行评审，明确主要业务数据交互和不同小组对接人。</p>
+<p>下周上线试运行….不知道还有什么bug…未完</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/14/v20190612/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -300,7 +425,7 @@
       
         
           
-            <p>公司的产品是服务于服装行业的crm系统，saas平台结构往往只能满足b端用户的共性需求，后期虽然可以通过迭代满足其他个性化需求，但是因底层数据结构以及产品结构的限制，开发成本会逐渐递增。所以公司决定由saas向paas化过度。<br>整个开放平台项目主要有4个产品，开发者中心、服务市场、API网关，应用中心<br>开发者中心。提供给开发者入驻成为应用服务商的平台。<br>成功入驻后，服务商可创建应用，配置相应回调接口，ip白名单，时间通知地址，创建完成后默认分配唯一appid和appsecret。<br>当时我们考虑，服务商实际上提供的是一种某个时段的某个服务，所以在应用的基础上，又包了一层服务的概念。这个服务在购买以及形态上类似于阿里云服务器，在购买上提供license的选择。</p>
+            <p>产品是基于saas服务的crm系统，saas服务往往只能满足b端用户的共性需求，后期虽然可以通过迭代满足其他个性化需求，但是因底层数据结构以及产品结构的限制，开发成本会逐渐递增，本期产品决定进行一次大的改版，由saas向paas化过度。我负责开放平台的搭建。<br>整个开放平台主要有4个模块构成，开发者中心、服务市场、API网关，应用中心<br>开发者中心。提供给开发者入驻成为应用服务商的平台。当时我们考虑到，服务商实际上提供的是一种某个时段的某个服务，所以在应用的基础上，又包了一层服务的概念，在购买上提供了license的选择。这个服务在购买以及形态上类似于阿里云服务器以及扩容。<br>服务商成功入驻到开放平台后，服务商可创建应用，配置相应回调接口，ip白名单，时间通知地址，创建完成后默认分配唯一appid和appsecret。<br>涉及到接口鉴权，oauth2.0 ，太难写了，我再整理下，未完。。。</p>
 
           
         
@@ -659,7 +784,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
