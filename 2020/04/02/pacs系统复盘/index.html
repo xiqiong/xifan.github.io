@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="1,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="RIS是放射信息管理系统，包括预约登记、出片、报告、审核等流程；PACS是解决dicom医学影像存储、调用、显示的系统。RIS和PACS系统称为大影像系统。此项目开发的系统将完全替换现有系统。在此次项目中发现2个问题，第一个是2个系统在线上并行的方案没有在产品设计的时候考虑进去；另外一个是项目管理中出现的问题 第一、试运行准备老数据迁移1.在做新系统之前没考虑周全，业务逻辑一致，在开发设计架构时应">
+<meta name="keywords" content="1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RIS、PACS系统复盘">
+<meta property="og:url" content="http://yoursite.com/2020/04/02/pacs系统复盘/index.html">
+<meta property="og:site_name" content="稀饭的博客">
+<meta property="og:description" content="RIS是放射信息管理系统，包括预约登记、出片、报告、审核等流程；PACS是解决dicom医学影像存储、调用、显示的系统。RIS和PACS系统称为大影像系统。此项目开发的系统将完全替换现有系统。在此次项目中发现2个问题，第一个是2个系统在线上并行的方案没有在产品设计的时候考虑进去；另外一个是项目管理中出现的问题 第一、试运行准备老数据迁移1.在做新系统之前没考虑周全，业务逻辑一致，在开发设计架构时应">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2020-04-02T11:10:01.687Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RIS、PACS系统复盘">
+<meta name="twitter:description" content="RIS是放射信息管理系统，包括预约登记、出片、报告、审核等流程；PACS是解决dicom医学影像存储、调用、显示的系统。RIS和PACS系统称为大影像系统。此项目开发的系统将完全替换现有系统。在此次项目中发现2个问题，第一个是2个系统在线上并行的方案没有在产品设计的时候考虑进去；另外一个是项目管理中出现的问题 第一、试运行准备老数据迁移1.在做新系统之前没考虑周全，业务逻辑一致，在开发设计架构时应">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/04/02/pacs系统复盘/">
+
+
+
+
+
+  <title>RIS、PACS系统复盘 | 稀饭的博客</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">稀饭的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/02/pacs系统复盘/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="稀饭">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="稀饭的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RIS、PACS系统复盘</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-02T00:00:00+08:00">
+                2020-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>RIS是放射信息管理系统，包括预约登记、出片、报告、审核等流程；PACS是解决dicom医学影像存储、调用、显示的系统。RIS和PACS系统称为大影像系统。此项目开发的系统将完全替换现有系统。<br>在此次项目中发现2个问题，第一个是2个系统在线上并行的方案没有在产品设计的时候考虑进去；另外一个是项目管理中出现的问题</p>
+<p>第一、试运行准备<br>老数据迁移<br>1.在做新系统之前没考虑周全，业务逻辑一致，在开发设计架构时应让他们参考来系统数据表结构，为后面老数据迁移做准备<br>2.在数据迁移过程中不仅要迁移用户行为数据，还要迁移原数据字典<br>3.医疗影像数据过于庞大，在迁移过程中需要花上几天的时间，那在此期间产生的新数据要实行追加</p>
+<p>新系统并行方案<br>因医疗系统行业特性，新系统直接完全替换掉老系统风险太大，实行2套系统并行1个月的方案，这个方案在测试阶段就必须得给到，并行方案中需要考虑基础信息系统是否支持接入2套系统，系统间数据交互会不会混乱？根据每一步的数据交互，考虑如下<br>1.第一步，对接his系统，试运行期间针对从his推送的数据实行双写，确保原系统能正常运作<br>2.第二步，医疗设备工作台获取ris数据形成worklist，调研发现，worklist只能接受一个服务的数据传输。在这种情况下，优先保障原系统的正常运作，新系统只能在离线状态提前测试，在业务正常运行期间依旧对接原ris系统。pacs系统对接worklist，通过worklist推送上来的dicom影像进行存储和分发。<br>3.第三步，阅片系统从pacs系统中调阅影像数据，pacs影像存储出具庞大，全部迁移较为困难，后考虑在新pacs系统中写一个存储过程，去查找原数据库中的影像存储地址。</p>
+<p>多系统对接<br>涉及到his、risp、pacs、打印i系统，叫号系统间的对接，方案需要在前期需求评审的时候就应该出来<br>1.为确保数据上的安全性，这些系统间的对接方式不是通过数据库进行，而是通过数据视图和存储过程进行对接，对接过程中更加简单，但是不易复用和移植。</p>
+<p>第二、项目管理中的问题<br>开发和测试在项目进行过程中都出现了不同程度的延期<br>问题如下<br>1.开发和测试人员对deadline不重视<br>2.开发估时偏差多大<br>3.测试对义务和需求了解不够<br>后续解决方案<br>1.在拆分任务阶段，开会确认每个人的任务以及工时，如有分配不合理的地方当场提出及修正<br>2.对于超过一个月的项目，开发过程中进行里程碑式管理，由开发和产品确认每一个里程碑的成果<br>3.测试在开发前期进行测试用例评审，由此了解测试以及开发对需求的理解程度，把控测试人员的测试进度<br>4.有多系统同时进行开发的情况，产品经理必须在前期整理好对接接口进行评审，明确主要业务数据交互和不同小组对接人。</p>
+<p>下周上线试运行….不知道还有什么bug…未完</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/1/" rel="tag"># 1</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/14/开放平台设计/" rel="next" title="开放平台设计">
+                <i class="fa fa-chevron-left"></i> 开放平台设计
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/08/网易课程学习笔记/" rel="prev" title="网易课程学习笔记">
+                网易课程学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">稀饭</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">稀饭</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
