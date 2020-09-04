@@ -229,6 +229,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/04/云PACS复盘/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="稀饭">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="稀饭的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/04/云PACS复盘/" itemprop="url">云PACS复盘</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-04T22:06:55+08:00">
+                2020-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>目前我们已经上线了PACS系统，部署在公司本地，并已服务于公司实际业务流程，包括登记检查单，拍片，阅片，影像存储等</p>
+<p>现在已有的PACS产品的基础上，将产品迭代升级为云PACS，已满足一下两个业务场景：</p>
+<ol>
+<li><p>满足自己公司医生可在外网完成阅片和出具报告的需要</p>
+</li>
+<li><p>将PACS产品标准化，提供对外服务，实现产品商业化需求</p>
+</li>
+</ol>
+<p><strong>目前云产品出具开发阶段，以下是自己在产品规划阶段未考虑全面的需求：</strong></p>
+<ul>
+<li>针对医疗机构的特殊场景，需要考虑到云PACS本地部署和saas部署2种方式。为保证本地PACS和云端PACS能各自实现业务闭环，在数据同步的过程中采用异同同步的方式。</li>
+<li><p>针对医疗业务场景，需要在云端PACS完成的只有阅片和出具报告操作。那么云端PACS部署后只开放写报告和审核报告模块的权限。在此基础上实现报告数据的同步</p>
+</li>
+<li><p>针对医疗业务场景，在实现报告数据双向同步的过程中，不能根据最新产生的数据去覆盖旧数据这种逻辑，以下是医疗业务上的特殊需求：</p>
+<ul>
+<li>本地PACS已打印的报告不能被覆盖</li>
+<li>针对同一个状态的报告数据，以本地PACS报告数据为准</li>
+</ul>
+<p>（考虑到以上情况，需要提炼出报告数据双向同步策略）</p>
+</li>
+<li><p>在租户影像上云过程中，医疗影像文件较大，如果采用实时上传的策略，将可能会占用大量服务器资源而影响正常业务进行。影像上云主要是为了满足医生在外网可进行正常阅片的需求，所以针对影像上云需要制定上云策略，思路如下：</p>
+<ul>
+<li>实时上传：根据报告状态，对于未出具的报告可优先实时上云</li>
+<li>闲暇上传：对于已出具的报告可放在晚上统一上云</li>
+</ul>
+<p>（报告状态可细分进行优先级排序）</p>
+</li>
+<li><p>需要考虑本地部署PACS系统时服务启停方案，方案如下：</p>
+<ul>
+<li>采用授权许可方式，对租户生授权码，授权码上携带服务的有效期。授权码过期后，可登陆，可查看历史数据，其他功能不可操作</li>
+</ul>
+</li>
+<li><p>私有化部署代码安全，方案如下：</p>
+<ul>
+<li>使用加密狗产品</li>
+</ul>
+</li>
+<li><p>页面方案，需要站业务角度考虑云端和本地操作的差异，对页面做相应调整</p>
+</li>
+<li><p>报告数据双向同步过程中，需要考虑用户正在操作时数据覆盖的情况，针对这种情况需要在页面中给到提示</p>
+</li>
+</ul>
+<p><strong>云PACS在评审过程中，暴露的自身不足：</strong></p>
+<ul>
+<li>需求场景，项目目标说的不到位，不能给项目组成员形成一个产品的初步印象，也给他们在理解具体功能时增加了障碍；</li>
+<li>严重的思维方面的问题，在规划产品的时候更多的时候是想完成一个任务，开发思维严重，把更多的时间花在是否能实现上面，让需求向技术实现妥协，缺少站在用户的角度和业务的角度考虑问题，导致在规划的时候产生了很多用户体验上的问题</li>
+<li>对策略规划缺少思考，思考深度不够，依赖惯性思维。比如在影像云上传的时候，未考虑到对上云进度进行策略处理</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/03/阅片系统复盘/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1019,7 +1186,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
